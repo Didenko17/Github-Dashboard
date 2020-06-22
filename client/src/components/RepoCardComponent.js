@@ -71,10 +71,14 @@ export const RepoCardComponent= ()=>{
             <p className="repocard-stars">Stars: {info.stars}</p>
             <div className="repocard-owner">
                 <div className="repocard-login">Owner: {info.login}</div>
-                <div className="repocard-avatar"><img src={info.avatar_url}/></div>
+                <div className="repocard-avatar"><img alt="avatar" src={info.avatar_url}/></div>
             </div>
             <p>Description:{info.description}</p>
-            <p>Languages:</p>
+            {info.languages.lenght?
+                    <p>Languages:</p>
+                    :
+                    <p></p>
+                }
             <ul className="repocard-languages">{showLanguages(info.languages).map(a=><li>{a}</li>)}</ul>
             <p>Most active contributors:</p>
             <ul>{info.contributors.map(a=><li className="repocard-contributors">{a.login}</li>)}</ul>
