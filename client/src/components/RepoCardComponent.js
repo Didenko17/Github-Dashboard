@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
-import {useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {useCookies} from 'react-cookie';
+import {Rate, Card, Divider, Badge, Row, Col, Statistic, Typography, Descriptions} from 'antd'
 import axios from "axios";
 
-const showLanguages= (obj)=>{
-    const arr=[];
-    for(let key in obj){
-        arr.push(key)
-    }
-    return arr
-}
+const {Title}=Typography
+const {Meta}=Card
 
-const getRepo = async (fullName)=>{
+
+
+const getRepo = async (fullName,token)=>{
     const result= await axios('https://api.github.com/repos/'+fullName,{
         method: "GET",
         headers: {
-            Authorization: "token fe9b07660dce9da2777b4f148ae8dd20f976f3aa",
+            Authorization: `token ${token}`,
         },
     })
     .then(({data:res})=>{
@@ -33,14 +32,14 @@ const getRepo = async (fullName)=>{
     const languagesPromise= axios(result.languages,{
         method: "GET",
         headers: {
-            Authorization: "token fe9b07660dce9da2777b4f148ae8dd20f976f3aa",
+            Authorization: `token ${token}`,
         },
     })
     .then(res=>res.data)
     const contributorsPromise= axios(result.contributors_url,{
         method: "GET",
         headers: {
-            Authorization: "token fe9b07660dce9da2777b4f148ae8dd20f976f3aa",
+            Authorization: `token ${token}`,
         },
     })
     .then(res=>res.data);
@@ -53,35 +52,94 @@ const getRepo = async (fullName)=>{
 }
 export const RepoCardComponent= ()=>{
     const {repoOwner,repoName}=useParams();
-    const [info,setInfo]=useState();
+    const [repo,setRepo]=useState();
     const [loading,setLoading]=useState(true);
+    //Получаем access token
+    const [cookies,setCookie]=useCookies(['token'])
+    const token = cookies.token;
+    const colors = [
+        'pink',
+        'red',
+        'yellow',
+        'orange',
+        'cyan',
+        'green',
+        'blue',
+        'purple',
+        'geekblue',
+        'magenta',
+        'volcano',
+        'gold',
+        'lime',
+      ];
     const refetch = async()=>{
-        const result= await getRepo(repoOwner+'/'+repoName);
-        setInfo(result);
+        const result= await getRepo(repoOwner+'/'+repoName, token);
+        setRepo(result);
         setLoading(false);
     }
     useEffect(()=>void refetch(),[]);
     if(loading){
         return <h2>Loading...</h2>
     }
+    const showLanguages= ()=>{
+        const arr=[];
+        for(let key in repo.languages){
+            arr.push(key)
+        }
+        if(arr.length){
+            return (
+                <div>
+                    <Divider orientation="left">Languages</Divider>
+                    {arr.map((item,index) => (
+                        <div key={colors[index]}>
+                            <Badge color={colors[index]} text={item} />
+                        </div>
+                    ))}
+                </div>
+            )
+        }
+    }
+    const showContributors= ()=>{
+        return (
+            <div>
+                <Divider orientation="left">Most active contributors</Divider>
+                {repo.contributors.map((contributor,index) => (
+                    <div key={colors[index]}>
+                        <Badge color={colors[index]} text={contributor.login} />
+                    </div>
+                ))}
+            </div>
+        )
+    }
     return(
         <div class='card'>
-            <h2>{info.name}</h2>
-            <p className="repocard-date">Last commit date: {info.lastCommitDate}</p>
-            <p className="repocard-stars">Stars: {info.stars}</p>
-            <div className="repocard-owner">
-                <div className="repocard-login">Owner: {info.login}</div>
-                <div className="repocard-avatar"><img alt="avatar" src={info.avatar_url}/></div>
-            </div>
-            <p>Description:{info.description}</p>
-            {info.languages.lenght?
-                    <p>Languages:</p>
-                    :
-                    <p></p>
-                }
-            <ul className="repocard-languages">{showLanguages(info.languages).map(a=><li>{a}</li>)}</ul>
-            <p>Most active contributors:</p>
-            <ul>{info.contributors.map(a=><li className="repocard-contributors">{a.login}</li>)}</ul>
+            <Title level={2}>{repo.name}</Title>
+            <Row>
+                <Col span={8}>
+                <Descriptions size="small" style={{display:'inline-block'}} column={1}>
+                    <Descriptions.Item label="Owner">{repo.login}</Descriptions.Item>
+                    <Descriptions.Item label="Last commit date">{repo.lastCommitDate}</Descriptions.Item>
+                </Descriptions>
+                </Col>
+                <Col span={8}>
+                    <Statistic title="Stars" value={repo.stars} prefix={<Rate disabled defaultValue={1} count={1}/>}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={8}>
+                    <Card
+                        hoverable
+                        style={{ width: 240 }}
+                        cover={<img alt="example" src={repo.avatar_url} />}
+                    >
+                        <Meta title="Description:" description={repo.description} />
+                    </Card>
+                </Col>
+                <Col span={16}>
+                    {showLanguages()}
+                    {showContributors()}
+                </Col>
+            </Row>
         </div>
     );
 }
