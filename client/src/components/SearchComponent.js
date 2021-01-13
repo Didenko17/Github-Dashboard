@@ -85,7 +85,7 @@ const getRepositories = async (text,page,token) => {
   return(
     <div>
       <Search style={{width:'50%', margin:'30px 25%'}} placeholder="input search text" onSearch={(value)=>setSearchText(value)} enterButton />
-      <Table pagination={false} dataSource={repos} columns={columns} />
+      <Table  pagination={false} dataSource={repos} columns={columns} />
       <Pagination className='pagination' showQuickJumper defaultCurrent={1} total={lastRepoNum} onChange={(page)=>{setCurrentPage(page)}} />
     </div>
   );

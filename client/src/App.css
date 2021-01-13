@@ -1,28 +1,25 @@
 .logo{
-    color: #fff;
-    font-size: 36px;
+  color: #fff;
+  font-size: 36px;
 }
 .layout{
-    height: 1000px;
+  height: 650px;
 }
 .site-layout-content {
-    min-height: 800px;
-    padding: 24px;
-    background: #fff;
-  }
-  #components-layout-demo-top .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(255, 255, 255, 0.3);
-  }
-  .ant-row-rtl #components-layout-demo-top .logo {
-    float: right;
-    margin: 16px 0 16px 24px;
-  }
-  .pagination{
-      max-width: 60%;
-      display: block;
-      margin: 20px auto!important;
-  }
+  height: 510px;
+  width: 100%;
+  padding: 24px;
+  background: #fff;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.pagination{
+  max-width: 60%;
+  display: block;
+  margin: 20px auto!important;
+}
+#login-button{
+  width: 250px;
+  height: 50px;
+  margin: 15% 40%;
+}

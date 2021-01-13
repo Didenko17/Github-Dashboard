@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {useParams} from 'react-router-dom';
 import {useCookies} from 'react-cookie';
-import {Rate, Card, Divider, Badge, Row, Col, Statistic, Typography, Descriptions} from 'antd'
+import {Rate, Card, Divider, Badge, Row, Col, Statistic, PageHeader, Descriptions} from 'antd'
 import axios from "axios";
 
-const {Title}=Typography
 const {Meta}=Card
 
 
@@ -112,8 +111,13 @@ export const RepoCardComponent= ()=>{
         )
     }
     return(
-        <div class='card'>
-            <Title level={2}>{repo.name}</Title>
+        <div>
+            <PageHeader
+                id='title'
+                className="site-page-header"
+                onBack={() => window.history.back()}
+                title={repo.name}
+            />
             <Row>
                 <Col span={8}>
                 <Descriptions size="small" style={{display:'inline-block'}} column={1}>
@@ -128,7 +132,6 @@ export const RepoCardComponent= ()=>{
             <Row>
                 <Col span={8}>
                     <Card
-                        hoverable
                         style={{ width: 240 }}
                         cover={<img alt="example" src={repo.avatar_url} />}
                     >
